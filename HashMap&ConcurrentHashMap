@@ -1,0 +1,49 @@
+HashMap 与 ConcurrentHashMap 底层都是 数组+链表
+顶级父类都是  AbstractMap
+
+ConcurrentHashMap和 HashMap 非常类似，唯一的区别就是其中的核心数据如 value ，以及链表都是 volatile 修饰的，保证了获取时的可见性。
+
+HashMap中未进行同步考虑，而HashTable则使用了synchronized，带来的直接影响就是可选择，
+我们可以在单线程时使用HashMap提高效率，而多线程时用HashTable来保证安全。
+
+ConcurrentHashMap效率比HashTable高，并发性比HashMap好。结合了两者的特点。
+
+------------------------------------------------------------------------------------------------------------------------------------
+补充：
+关键字 volatile:     1.保证可见性，不保证原子性 2.禁止指令重排
+                     相较于Synchronize和Lock重锁，是个轻锁
+               
+关键字 transient:    被修饰的成员变量不参与序列化
+关键字 Serializable: 要想序列化必须实现Serializable接口(常见的String就已经实现了)。 
+------------------------------------------------------------------------------------------------------------------------------------
+代码实现：
+//1.HashMap:
+public class TestMap {
+    public static void main(String[] args) {
+        HashMap<String,Integer> map = new HashMap<>();
+        map.put("11",23);
+        map.put("22",34);
+        map.put("33",23);
+        Iterator<HashMap.Entry<String,Integer>> entryIterator = map.entrySet().iterator();
+        while (entryIterator.hasNext()){
+            HashMap.Entry<String,Integer> next = entryIterator.next();
+            System.out.println(next.getKey()+" "+next.getValue());
+        }
+    }
+}
+==================================================================================================================================
+//2.ConcurrentHashMap
+public class TestMap {
+    public static void main(String[] args) {
+        ConcurrentHashMap<String,Integer> map = new ConcurrentHashMap<>();
+        map.put("11",23);
+        map.put("22",34);
+        map.put("33",23);
+        map.put("44",56);
+        Iterator<ConcurrentHashMap.Entry<String,Integer>> entryIterator = map.entrySet().iterator();
+        while (entryIterator.hasNext()){
+            ConcurrentHashMap.Entry<String,Integer> next = entryIterator.next();
+            System.out.println(next.getKey()+" "+next.getValue());
+        }
+    }
+}
